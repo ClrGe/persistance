@@ -1,6 +1,6 @@
 const express = require('express');
-
 const app = express.Router();
+const dbo = require('../db/conn');
 
 // GET (READ)
 app.route("/logs").get(async function (req, res) {
@@ -8,13 +8,7 @@ app.route("/logs").get(async function (req, res) {
 
     db.collection('logs')
       .find({}).limit(50)
-      .toarray(function (err, result) {
-            if (err) {
-                res.status(400).send("Error fetching logs");
-            } else {
-                res.json(result);
-            }
-      });
+      .toarray(res.json());
 });
 
 // POST (CREATE)
@@ -77,3 +71,5 @@ app.route("/logs/delete/:id").delete((req, res) => {
         }
       });
   });
+
+  module.exports = app;
