@@ -18,9 +18,9 @@ L'API  expose les méthodes :
 
 Paramètres de requête :
 - la requête elle-même en structure JSON;
-- un champ 'workspace' qui, dans l'implémentation MongoDB, correspond à une base de données;
-- un champ 'topic' qui, dans l'implémentation MongoDB, correspond à une collection.
-Si 'workspace' est manquant, renvoi sur une base de données par défaut.
+- un champ 'dataSource' qui, dans l'implémentation MongoDB, correspond à une base de données;
+- un champ 'database' qui, dans l'implémentation MongoDB, correspond à une collection.
+Si 'dataSource' est manquant, renvoi sur une base de données par défaut.
 
 ## Authentification
 
