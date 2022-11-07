@@ -7,6 +7,7 @@ const   { MongoClient }     = require("mongodb"),
         express             = require("express"),
         app                 = express();
 
+
 async function connectToServer() {
   const mongo = new MongoClient(connectionString, params);
   try {
@@ -166,7 +167,5 @@ async function connectToServer() {
 }
 
 connectToServer().catch(console.error);
-
-module.exports = app;
 
 module.exports = app;
