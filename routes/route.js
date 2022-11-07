@@ -2,7 +2,7 @@ const express = require('express');
 const app = express.Router();
 const dbo = require('../db/conn');
 
-// GET
+// Return all documents in the collection (find)
 app.route("/logs").get(async function (req, res) {
     const db = dbo.getDb();
 
@@ -16,8 +16,23 @@ app.route("/logs").get(async function (req, res) {
       });
 });
 
-// POST
+// Return a single document (findOne using id)
+app.route("/logs/:id").get(async function (req, res) {
+  const db = dbo.getDb();
+  const documentQuery = { document_id: req.body.id };
 
+      db.collection("logs")
+      .findOne(documentQuery, function (err, _result) {
+        if (err) {
+          res.status(400).send(`Cannot find document with id ${documentQuery.document_id}!`);
+        } else {
+          res.json(result);
+        }
+      });
+
+});
+
+// Create a new document (insertOne)
 app.route("/logs/create").post(function (req, res) {
     const db = dbo.getDb();
     const document = {
@@ -38,7 +53,7 @@ app.route("/logs/create").post(function (req, res) {
         });
 });
 
-
+// Update existing document (updateOne using id)
 app.route("/logs/update").post(function (req, res) {
     const db = dbo.getDb();
     const listingQuery = { _id: req.body.id };
@@ -47,31 +62,30 @@ app.route("/logs/update").post(function (req, res) {
         likes: 1
       }
     };
-  
+
     db
       .collection("logs")
       .updateOne(listingQuery, updates, function (err, _result) {
         if (err) {
-          res.status(400).send(`Error updating likes on listing with id ${listingQuery.id}!`);
+          res.status(400).send(`Error updating document with id ${listingQuery.id}!`);
         } else {
-          console.log("1 document updated");
+          console.log("Document updated");
         }
       });
   });
 
-// DELETE
-
+// Delete a single document (deleteOne using id)
 app.route("/logs/delete/:id").delete((req, res) => {
     const db = dbo.getDb();
-    const listingQuery = { listing_id: req.body.id };
-  
+    const documentQuery = { document_id: req.body.id };
+
     db
       .collection("logs")
-      .deleteOne(listingQuery, function (err, _result) {
+      .deleteOne(documentQuery, function (err, _result) {
         if (err) {
-          res.status(400).send(`Error deleting listing with id ${listingQuery.listing_id}!`);
+          res.status(400).send(`Error deleting document with id ${documentQuery.document_id}!`);
         } else {
-          console.log("1 document deleted");
+          console.log("Document deleted");
         }
       });
   });
