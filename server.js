@@ -168,3 +168,5 @@ async function connectToServer() {
 connectToServer().catch(console.error);
 
 module.exports = app;
+
+module.exports = app;
