@@ -2,16 +2,21 @@ const express = require('express');
 const app = express.Router();
 const dbo = require('../db/conn');
 
-// GET (READ)
+// GET
 app.route("/logs").get(async function (req, res) {
     const db = dbo.getDb();
 
     db.collection('logs')
-      .find({}).limit(50)
-      .toarray(res.json());
+      .find({}).toArray(function (err, result) {
+        if (err) {
+        res.status(400).send("error fetching logs");
+        } else {
+          res.json(result);
+        }
+      });
 });
 
-// POST (CREATE)
+// POST
 
 app.route("/logs/create").post(function (req, res) {
     const db = dbo.getDb();
@@ -33,7 +38,6 @@ app.route("/logs/create").post(function (req, res) {
         });
 });
 
-// POST (UPDATE)
 
 app.route("/logs/update").post(function (req, res) {
     const db = dbo.getDb();
