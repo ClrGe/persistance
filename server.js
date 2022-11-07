@@ -47,13 +47,12 @@ async function connectToServer() {
         app.post("/api/find/:id", async (req, res) => {
 
             const collection = req.body.collection || "logs";
-            const apiKey = process.env.API_KEY;
-            const documentQuery = { _id: req.body.id };
+            const document = { _id: req.body.id };
 
             if (req.headers.api_key & (req.headers.api_key == apiKey)) {
-                await db.collection(collection).findOne(documentQuery, function (err, _result) {
+                await db.collection(collection).findOne(document, function (err, _result) {
                     if (err) {
-                    res.status(400).send(`Cannot find document with id ${documentQuery._id}!`);
+                    res.status(400).send(`Cannot find document with id ${document._id}!`);
                     } else {
                     res.json(result);
                     }
@@ -68,7 +67,6 @@ async function connectToServer() {
         app.post("/api/insert", async (req, res) => {
 
             const collection = req.body.collection || "logs";
-            const documentQuery = { document_id: req.body.id };
             const document = {
                 id: req.body.id,
                 last_modified: new Date(),
@@ -117,7 +115,6 @@ async function connectToServer() {
         app.post("/api/delete/:id", async (req, res) => {
 
             const collection = req.body.collection || "logs";
-            const apiKey = process.env.API_KEY;
             const document = { _id: req.query.id };
 
             if (req.headers.api_key & (req.headers.api_key == apiKey)) {
