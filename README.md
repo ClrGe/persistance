@@ -8,6 +8,11 @@
 - ExpressJS
 - MongoDB 6.0.2
 
+## Installation
+
+- Cloner ce dépôt
+- Installer les dépendances ('npm install')
+- Renommer *.env.sample* en *.env* et compléter selon votre environnement
 ## Requêtes et fonctionnalités
 
 L'API  expose les méthodes :
