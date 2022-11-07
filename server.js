@@ -5,165 +5,144 @@ const   { MongoClient }     = require("mongodb"),
         params              = { useNewUrlParser: true, useUnifiedTopology: true },
         PORT                = process.env.PORT || 8000,
         express             = require("express"),
-        app                 = express();
+        app                 = express(),
+        apiKey              = process.env.API_KEY;
 
 
 async function connectToServer() {
-  const mongo = new MongoClient(connectionString, params);
-  try {
-    await mongo.connect();
-    await mongo.db("admin").command({ ping: 1 });
-    db = mongo.db("logs");
-    //log = db.collection(journal);
 
-    app.use(express.json());
-    app.use(express.urlencoded({ extended: false }));
+    const mongo = new MongoClient(connectionString, params);
 
-    // Return all documents in the collection
-    app.get("/logs", async (req, res) => {
-      const collection = req.params.collection || "logs";
-      const apiKey = process.env.API_KEY;
+    try {
 
-      if (req.headers.api_key & (req.headers.api_key == apiKey)) {
-        db.collection(collection)
-          .find({})
-          .toArray(function (err, result) {
-            if (err) {
-              res.status(400).send("error fetching logs");
+        await mongo.connect();
+        db = mongo.db("logs");
+
+        app.use(express.json());
+        app.use(express.urlencoded({ extended: false }));
+        app.set("trust proxy", true);
+
+        // Return all documents in the collection
+        app.post("/api/find", async (req, res) => {
+
+            const collection = req.body.collection || "logs";
+
+            if (req.headers.api_key & (req.headers.api_key == apiKey)) {
+                await db.collection(collection).find({}).toArray(function (err, result) {
+                    if (err) {
+                        res.status(400).send("error fetching logs");
+                    } else {
+                        res.json(result);
+                        console.log(`Origin : ${req.ip}`);
+                    }
+                });
             } else {
-              res.json(result);
+                res.status(401).send(`Origin : ${req.ip}`);
+                console.log(req.ip);
             }
-          });
-      } else {
-        res.status(401).send("unauthorized");
-      }
-    });
 
-    // Return a single document
-    app.get("/logs/:id", async (req, res) => {
-      const collection = req.params.collection || "logs";
-      const apiKey = process.env.API_KEY;
-      const documentQuery = { document_id: req.body.id };
-
-      if (req.headers.api_key & (req.headers.api_key == apiKey)) {
-        db.collection(collection).findOne(
-          documentQuery,
-          function (err, _result) {
-            if (err) {
-              res
-                .status(400)
-                .send(
-                  `Cannot find document with id ${documentQuery.document_id}!`
-                );
-            } else {
-              res.json(result);
-            }
-          }
-        );
-      } else {
-        res.status(401).send("unauthorized");
-      }
-    });
-
-    // Create a new document
-    app.post("/logs/create", async (req, res) => {
-      const collection = req.params.collection || "logs";
-      const apiKey = process.env.API_KEY;
-      const documentQuery = { document_id: req.body.id };
-
-      const document = {
-        id: req.body.id,
-        last_modified: new Date(),
-        origin: req.headers.origin,
-      };
-      if (req.headers.api_key & (req.headers.api_key == apiKey)) {
-        db.collection(collection).insertOne(document, function (err, result) {
-          if (err) {
-            res.status(400).send("Error inserting document!");
-          } else {
-            console.log(`Added a new document with id ${result.insertedId}`);
-            res.status(204).send();
-          }
         });
-      } else {
-        res.status(401).send("unauthorized");
-      }
-    });
-    // Update existing document
-    app.post("/logs/update", async (req, res) => {
-      const collection = req.params.collection || "logs";
-      const apiKey = process.env.API_KEY;
-      const documentQuery = { document_id: req.body.id };
 
-      const updates = {
-        $inc: {
-          editing: 1,
-        },
-      };
-      if (req.headers.api_key & (req.headers.api_key == apiKey)) {
-        db.collection(collection).updateOne(
-          documentQuery,
-          updates,
-          function (err, _result) {
-            if (err) {
-              res
-                .status(400)
-                .send(`Error updating document with id ${documentQuery.id}!`);
+        // Return a single document
+        app.post("/api/find/:id", async (req, res) => {
+
+            const collection = req.body.collection || "logs";
+            const apiKey = process.env.API_KEY;
+            const documentQuery = { _id: req.body.id };
+
+            if (req.headers.api_key & (req.headers.api_key == apiKey)) {
+                await db.collection(collection).findOne(documentQuery, function (err, _result) {
+                    if (err) {
+                    res.status(400).send(`Cannot find document with id ${documentQuery._id}!`);
+                    } else {
+                    res.json(result);
+                    }
+                });
             } else {
-              console.log("Document updated");
+                    res.status(401).send("unauthorized");
             }
-          }
-        );
-      } else {
-        res.status(401).send("unauthorized");
-      }
-    });
-    
-    app.delete("/logs/delete/:id", async (req, res) => {
-      const collection = req.params.collection || "logs";
-      const apiKey = process.env.API_KEY;
-      const documentQuery = { document_id: req.body.id };
 
-      if (req.headers.api_key & (req.headers.api_key == apiKey)) {
-        db.collection(collection).deleteOne(
-          documentQuery,
-          function (err, _result) {
-            if (err) {
-              res
-                .status(400)
-                .send(
-                  `Error deleting document with id ${documentQuery.document_id}!`
-                );
+        });
+
+        // Create a new document
+        app.post("/api/insert", async (req, res) => {
+
+            const collection = req.body.collection || "logs";
+            const documentQuery = { document_id: req.body.id };
+            const document = {
+                id: req.body.id,
+                last_modified: new Date(),
+                origin: req.ip,
+            };
+
+            if (req.headers.api_key & (req.headers.api_key == apiKey)) {
+                await db.collection(collection).insertOne(document, function (err, result) {
+                    if (err) {
+                        res.status(400).send("Error inserting document!");
+                    } else {
+                        console.log(`Added a new document with id ${result.insertedId}`);
+                        res.status(204).send(result);
+                    }
+                });
             } else {
-              console.log("Document deleted");
+                res.status(401).send("unauthorized");
             }
-          }
-        );
-      } else {
-        res.status(401).send("unauthorized");
-      }
-    });
-    // catch 404 and forward to error handler
-    app.use(function (req, res, next) {
-      next(createError(404));
+
+        });
+
+        // Update existing document
+        app.post("/api/update", async (req, res) => {
+
+            const collection = req.body.collection || "logs";
+            const document = { id: req.body.id };
+            const updates = {
+                $inc: {
+                editing: 1,
+                },
+            };
+
+            if (req.headers.api_key & (req.headers.api_key == apiKey)) {
+                await db.collection(collection).updateOne(document, updates, function (err, _result) {
+                    if (err) {
+                        res.status(400).send(`Error updating document with id ${document.id}!`);
+                    } else {
+                        console.log("Document updated");
+                    }
+                });
+            } else {
+                res.status(401).send("unauthorized");
+            }
+        });
+
+        app.post("/api/delete/:id", async (req, res) => {
+
+            const collection = req.body.collection || "logs";
+            const apiKey = process.env.API_KEY;
+            const document = { _id: req.query.id };
+
+            if (req.headers.api_key & (req.headers.api_key == apiKey)) {
+                await db.collection(collection).deleteOne(document, function (err, _result) {
+                    if (err) {
+                        res.status(400).send(`Error deleting document with id ${document._id}!`);
+                    } else {
+                        res.status(200);
+                        console.log("Document deleted");
+                    }
+                });
+            } else {
+                res.status(401).send("unauthorized");
+            }
+
+        });
+
+    } catch (err) {
+        console.error(err);
+    }
+
+    app.listen(PORT, () => {
+        console.log(`Server Started at ${PORT}`);
     });
 
-    // error handler
-    app.use(function (err, req, res, next) {
-      // set locals, only providing error in development
-      res.locals.message = err.message;
-      res.locals.error = req.app.get("env") === "development" ? err : {};
-
-      // render the error page
-      res.status(err.status || 500);
-      res.render("error");
-    });
-  } catch (err) {
-    console.error(err);
-  }
-  app.listen(PORT, () => {
-    console.log(`Server Started at ${PORT}`);
-  });
 }
 
 connectToServer().catch(console.error);
