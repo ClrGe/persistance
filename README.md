@@ -1,6 +1,6 @@
 *CLG - novembre 2022*
 
-**Service de persistance qui présente une API HTTP authentifiée pour agir sur une base de données.**
+**Service de persistance qui présente une API HTTP authentifiée sur une base de données.**
 
 ## Pile logicielle
 
