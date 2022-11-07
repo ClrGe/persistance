@@ -11,7 +11,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(require('./routes/record'));
+app.use(require('./routes/route'));
 
 // app.use(function (err, _req, res) {
 //     console.error(err.stack);
