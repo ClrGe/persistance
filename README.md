@@ -1,45 +1,44 @@
-*CLG - novembre 2022*
+*CLG - november 2022*
 
-**Service de persistance qui présente une API HTTP authentifiée sur une base de données.**
+**Microservice serving an authenticated REST API to access a database**
 
-## Pile logicielle
+## Stack
 
 - NodeJS 16.18LTS
 - ExpressJS
-- MongoDB 6.0.2
+- Any database (currently developing with MongoDB 6 but it will be extended to any paradigm)
 
-## Installation
+## Run
 
-- Cloner ce dépôt
-- Installer les dépendances ('npm install')
-- Renommer *.env.sample* en *.env* et compléter selon votre environnement
-## Requêtes et fonctionnalités
+- Clone the repository
+- Install dependencies ('npm install')
+- Rename *.env.sample* to *.env* and complete it according to your environment
+## Requests, methods, endpoints
 
-L'API  expose les méthodes :
-- requêtes GET: find, findOne, findById
-- requêtes POST: insertOne, insertMany, updateOne, updateMany
-- requêtes DELETE: deleteOne, deleteMany
+The API  exposes the following methods :
+- GET   : find, findOne, findById
+- POST  : insertOne, insertMany, updateOne, updateMany
+- DELETE: deleteOne, deleteMany
 
-Paramètres de requête :
-- la requête elle-même en structure JSON;
-- un champ 'dataSource' qui, dans l'implémentation MongoDB, correspond à une base de données;
-- un champ 'database' qui, dans l'implémentation MongoDB, correspond à une collection.
-Si 'dataSource' est manquant, renvoi sur une base de données par défaut.
+Parameters :
+- JSON request structure;
+- 'dataSource' field;
+- 'database' field;
 
-## Authentification
+If dataSource and database are not specified, redirect to default source and db.
+## Authentication
 
-Authentification des requêtes avec JWT via un service distinct.
+Database access is only possible if the client provides a valid api key.
+## Routing and logs
 
-## Routage et traçabilité
+API routing is configured through Nginx. Any unidentified request is blocked.
 
-Le routage des API est fait par nginx
+Every action, access and query are logged to the database (date, origin, user,request parameters and / or body).
 
-Tous les accès sont tracés dans une collection *log* en base de données. Sont enregistrés : la date/heure, l'adresse IP source (passée par nginx), l'ID d'utilisateur et la requête (paramètres de GET ou body).
+An authorization function is called before any database access. It receives every request parameters and returns a boolean.
+If false, the request isn't executed and a 403 status code is sent.
 
-Avant tout accès à la base de données, une fonction d'autorisation à laquelle on passe tous les paramètres de la requête renvoie un booléen. La première version de cette fonction ne fait rien et répond systématiquement 'true'.
- Si cette fonction répond 'false' la requête sur la base de données n'est pas exécutée et on renvoie un code 403. Cette fonction concerne uniquement les droits des clients authentifiés; la requête d'un client non authentifié aura été bloquée avant d'y arriver.
+## To do
 
-## A intégrer plus tard
-
-Gestion des droits et autres règles de filtrage.
-Tests des requêtes avec un programme en Go avec paramètres en ligne de commande.
+Roles / Privileges and filtering
+Tests requests with a CLI program in Golang
