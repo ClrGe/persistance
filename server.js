@@ -1,22 +1,49 @@
+// CLG - 08/11/2022
+
 require("dotenv").config({ path: "./.env" });
 
-const   { MongoClient }     = require("mongodb"),
-        connectionString    = process.env.DB_URI,
-        params              = { useNewUrlParser: true, useUnifiedTopology: true },
-        PORT                = process.env.PORT || 8000,
-        express             = require("express"),
-        app                 = express(),
-        apiKey              = process.env.API_KEY;
+const   express             = require("express"),
+        { MongoClient }     = require("mongodb"),
+        cors                = require("cors"),
+        httpErrors          = require("http-errors"),
+        logger              = require('morgan'),
+        dataParams          = {useNewUrlParser: true, useUnifiedTopology: true},
+        dataSource          = process.env.DB_URI    || "mongodb://localhost:27017",
+        apiKey              = process.env.API_KEY   || "123",
+        PORT                = process.env.PORT      || 8000;
 
+let     database,
+        collection,
+        db,
+        trace;
+
+// Log access / query to the database
+
+async function traceDbAccess(a, b, c, d, e) {
+
+    let log = {
+        date    : new Date(),
+        comment : a,
+        origin  : b,
+        req     : c,
+        status  : d,
+        auth    : e
+    }
+
+    await trace.insertOne(log);
+}
+
+// Server and DB ops
+
+const app = express();
 
 async function connectToServer() {
 
-    const mongo = new MongoClient(connectionString, params);
+    const mongo = new MongoClient(dataSource, dataParams);
 
     try {
 
         await mongo.connect();
-        db = mongo.db("logs");
 
         app.use(express.json());
         app.use(express.urlencoded({ extended: false }));
@@ -25,11 +52,18 @@ async function connectToServer() {
         // Return all documents in the collection
         app.post("/api/find", async (req, res) => {
 
-            const collection = req.body.collection || "logs";
+            database = req.body.database || "persistance";
+            db = mongo.db(database);
+            trace = db.collection("logs");
+
+            collection = req.body.collection || "logs";
 
             if (req.headers.api_key & (req.headers.api_key == apiKey)) {
+                traceDbAccess("Display all docs in collection " + collection, req.ip, req.body, res.status, true);
                 let findResult = await db.collection(collection).find({}).toArray();
-                res.json(findResult);
+                res.status(200).json(findResult);
+                console.log(`Database : ${database}`);
+                console.log(`Client origin : ${req.ip}`);
             } else {
                 res.status(401).send(`Origin : ${req.ip}`);
                 console.log(req.ip);

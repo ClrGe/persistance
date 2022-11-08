@@ -17,6 +17,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.11.0",
     "mongodb-local-data-api": "^1.0.1",
+    "morgan": "^1.10.0",
     "nodemon": "^2.0.20",
     "validator": "^13.7.0"
   }
