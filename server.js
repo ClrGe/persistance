@@ -1,4 +1,5 @@
 // CLG - 08/11/2022
+// TO DO : give access + async 
 
 require("dotenv").config({ path: "./.env" });
 
