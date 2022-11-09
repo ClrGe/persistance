@@ -138,7 +138,7 @@ async function connectToServer() {
             database    = req.body.database   || "persistance";
             collection  = req.body.collection || "persistance";
             document    = { id: req.params.id };
-            updates     = {$set: { id: 1,},};
+            updates     = {$set: { last_modified: new Date(), data: req.body.data},};
             db          = mongo.db(database);
             trace       = db.collection("logs");
 
