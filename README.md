@@ -27,9 +27,9 @@ Authentification des requêtes avec JWT via un service distinct.
 
 ## Routage et traçabilité
 
-Le routage des API est fait par nginx
+Routage des API par nginx
 
-Tous les accès sont tracés dans une collection *log* en base de données. Sont enregistrés : la date/heure, l'adresse IP source (passée par nginx), l'ID d'utilisateur et la requête (paramètres de GET ou body).
+Accès tracés dans une collection *log* en base de données (date/heure, adresse IP source (passée par nginx), ID d'utilisateur et requête (paramètres de GET ou body)).
 
 Avant tout accès à la base de données, une fonction d'autorisation à laquelle on passe tous les paramètres de la requête renvoie un booléen. La première version de cette fonction ne fait rien et répond systématiquement 'true'.
  Si cette fonction répond 'false' la requête sur la base de données n'est pas exécutée et on renvoie un code 403. Cette fonction concerne uniquement les droits des clients authentifiés; la requête d'un client non authentifié aura été bloquée avant d'y arriver.
