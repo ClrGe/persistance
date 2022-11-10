@@ -20,7 +20,7 @@ let     database,
 
 // Log access / query to the database
 
-  function traceDbAccess(a, b, c, d, e) {
+  async  function traceDbAccess(a, b, c, d, e) {
 
     let log = {
         date    : new Date(),
