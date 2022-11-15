@@ -19,6 +19,7 @@
     "mongodb-local-data-api": "^1.0.1",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.20",
+    "request-ip": "^3.3.0",
     "validator": "^13.7.0"
   }
 }

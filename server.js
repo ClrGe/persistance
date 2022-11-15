@@ -4,10 +4,9 @@ require("dotenv").config({ path: "./.env" });
 
 const   express             = require("express"),
         { MongoClient }     = require("mongodb"),
-        cors                = require("cors"),
-        httpErrors          = require("http-errors"),
-        logger              = require('morgan'),
+        fs                  = require("fs"),
         dataParams          = {useNewUrlParser: true, useUnifiedTopology: true},
+        traceDir            = process.env.TRACE_DIR || "~/",
         dataSource          = process.env.DB_URI    || "mongodb://localhost:27017",
         apiKey              = process.env.API_KEY   || "123",
         PORT                = process.env.PORT      || 8000;
@@ -20,18 +19,18 @@ let     database,
 
 // Log * access / queries to the database
 
-async function traceDbAccess(a, b, c, d, e) {
+async function traceDbAccess(req, res, next) {
 
     let log = {
         date    : new Date(),
-        comment : a,
-        origin  : b,
-        req     : c,
-        status  : d,
-        auth    : e
+        origin  : req.ip,
+        req     : req.method + " " + req.url,
+        status  : req.statusCode,
     }
 
     await trace.insertOne(log);
+
+    next();
 }
 
 // Server and DB ops
@@ -48,6 +47,7 @@ async function connectToServer() {
 
         app.use(express.json());
         app.use(express.urlencoded({ extended: false }));
+        app.use(traceDbAccess);
         app.set("trust proxy", true);
 
         // Return all documents in the collection
