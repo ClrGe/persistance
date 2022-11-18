@@ -7,8 +7,9 @@
 ## 📚 Stack
 
 ---
+## Stack
 
-- NodeJS 16.18LTS
+- NodeJS
 - ExpressJS
 - Any database (currently developing with MongoDB 6.0.2 but will be extended to any db)
 
