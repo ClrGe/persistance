@@ -2,10 +2,9 @@
 
 **Microservice serving an authenticated REST API to access a database**
 ---
-**Architecture reference : MongoDB Data Api (for Atlas)**
 ## Stack
 
-- NodeJS 16.18LTS
+- NodeJS
 - ExpressJS
 - Any database (currently developing with MongoDB 6 but it will be extended to any paradigm)
 
