@@ -1,4 +1,7 @@
 // CLG - 08/11/2022
+// TODO : async traceDbAccess
+// TODO : add missing operations
+// TODO : accept other db paradigm
 
 require("dotenv").config({ path: "./.env" });
 
