@@ -18,6 +18,7 @@ const   express             = require("express"),
 let     database,
         collection,
         db,
+        trace,
         document;
 
 // Log * access / queries to the database
@@ -38,8 +39,8 @@ async function connectToServer() {
 
         app.use(express.json());
         app.use(express.urlencoded({ extended: false }));
-        //app.use(traceDbAccess);
         app.set("trust proxy", true);
+        app.use(traceDbAccess);
 
         // Return all documents in the collection
         app.post("/api/find/all", async (req, res) => {
@@ -57,7 +58,7 @@ async function connectToServer() {
                 res.status(401).send(`Unauthorized: missing API key`);
                 console.log(req.ip);
             }
-
+            trace.insertOne(req.log);
         });
 
         // Return a single document (first match)
