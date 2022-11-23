@@ -19,6 +19,7 @@ let     database,
         collection,
         db,
         trace,
+        comment,
         document;
 
 // Server and DB ops
@@ -40,18 +41,19 @@ async function connectToServer() {
         // Return all documents in the collection
         app.post("/api/find/all", async (req, res) => {
 
-            database    = req.body.database     || "persistance";
-            collection  = req.body.collection   || "logs";
-            db          = mongo.db(database);
-            trace       = db.collection("logs");
+            database        = req.body.database     || "persistance";
+            collection      = req.body.collection   || "logs";
+            db              = mongo.db(database);
+            req.log.comment = comment;
+            trace           = db.collection("logs");
 
             if (req.headers.api_key & (req.headers.api_key == apiKey)) {
                 let findResult = await db.collection(collection).find({}).toArray();
                 res.status(200).json(findResult);
-                req.log.comment = `Display all documents of collection ${collection} in database ${database}`;
+                comment = `Display all documents of collection ${collection} in database ${database}`;
             } else {
-                req.log.comment = `Unauthorized: missing API key`;
-                res.status(401).send(req.log.comment);
+                comment = `Unauthorized: missing API key`;
+                res.status(401).send(comment);
             }
 
             trace.insertOne(req.log);
@@ -60,19 +62,20 @@ async function connectToServer() {
         // Return a single document (first match)
         app.post("/api/find", async (req, res) => {
 
-            database    = req.body.database     || "persistance";
-            collection  = req.body.collection   || "logs";
-            db          = mongo.db(database);
-            queryFilter = req.body.filter;
-            trace       = db.collection("logs");
+            database        = req.body.database     || "persistance";
+            collection      = req.body.collection   || "logs";
+            db              = mongo.db(database);
+            req.log.comment = comment;
+            queryFilter     = req.body.filter;
+            trace           = db.collection("logs");
 
             if (req.headers.api_key & (req.headers.api_key == apiKey)) {
                 let findOneResult = await db.collection(collection).findOne(queryFilter)
                 res.json(findOneResult);
-                req.log.comment = `Display document matching filter ${queryFilter} in collection ${collection} of database ${database}`;
+                comment = `Display document matching filter ${queryFilter} in collection ${collection} of database ${database}`;
             } else {
-                req.log.comment = `Unauthorized: missing API key`;
-                res.status(401).send(req.log.comment);
+                comment = `Unauthorized: missing API key`;
+                res.status(401).send(comment);
             }
 
             trace.insertOne(req.log);
@@ -82,19 +85,20 @@ async function connectToServer() {
         // Return a document by id
         app.post("/api/find/:id", async (req, res) => {
 
-            database    = req.body.database     || "persistance";
-            collection  = req.body.collection   || "persistance";
-            document    = { id: req.params.id };
-            db          = mongo.db(database);
-            //filter      = req.body.filter.id;
-            trace       = db.collection("logs");
+            database        = req.body.database     || "persistance";
+            collection      = req.body.collection   || "persistance";
+            document        = { id: req.params.id };
+            db              = mongo.db(database);
+            req.log.comment = comment;
+            //filter        = req.body.filter.id;
+            trace           = db.collection("logs");
 
             if (req.headers.api_key & (req.headers.api_key == apiKey)) {
                 let findIdResult = await db.collection(collection).find({}).toArray();
                 res.json(findIdResult);
             } else {
-                req.log.comment = `Unauthorized: missing API key`;
-                res.status(401).send(req.log.comment);
+                comment = `Unauthorized: missing API key`;
+                res.status(401).send(comment);
             }
 
             trace.insertOne(req.log);
@@ -104,23 +108,24 @@ async function connectToServer() {
         // Create a new document
         app.post("/api/insert", async (req, res) => {
 
-            database    = req.body.database     || "persistance";
-            collection  = req.body.collection   || "logs";
-            document    = req.body;
-            db          = mongo.db(database);
-            trace       = db.collection("logs");
+            database        = req.body.database     || "persistance";
+            collection      = req.body.collection   || "logs";
+            document        = req.body;
+            req.log.comment = comment;
+            db              = mongo.db(database);
+            trace           = db.collection("logs");
 
             if (req.headers.api_key & (req.headers.api_key == apiKey)) {
                 let insertResult = await db.collection(collection).insertOne(document)
                 if(insertResult.acknowledged) {
-                    req.log.comment = `Added a new document with id ${insertResult.insertedId} in database ${database}, collection ${collection}`;
+                    comment = `Added a new document with id ${insertResult.insertedId} in database ${database}, collection ${collection}`;
                 } else {
-                    req.log.comment = `Error : could not insert document in database ${database}, collection ${collection}`;
+                    comment = `Error : could not insert document in database ${database}, collection ${collection}`;
                 }
                 res.status(200).send(insertResult);
             } else {
                 req.log.comment = `Unauthorized: missing API key`;
-                res.status(401).send(req.log.comment);
+                res.status(401).send(comment);
             }
 
             req.log.deletedCount
@@ -131,19 +136,20 @@ async function connectToServer() {
         // Update existing document by id
         app.post("/api/update/:id", async (req, res) => {
 
-            database    = req.body.database   || "persistance";
-            collection  = req.body.collection || "logs";
-            document    = { id: req.params.id };
-            updates     = {$set: { last_modified: new Date(), data: req.body.data},};
-            db          = mongo.db(database);
-            trace       = db.collection("logs");
+            database        = req.body.database   || "persistance";
+            collection      = req.body.collection || "logs";
+            document        = { id: req.params.id };
+            req.log.comment = comment;
+            updates         = {$set: { last_modified: new Date(), data: req.body.data},};
+            db              = mongo.db(database);
+            trace           = db.collection("logs");
 
             if (req.headers.api_key & (req.headers.api_key == apiKey)) {
                 let updateResult = await db.collection(collection).updateOne(document, updates);
                 res.status(200).json(updateResult);
             } else {
-                req.log.comment = `Unauthorized: missing API key`;
-                res.status(401).send(req.log.comment);
+                comment = `Unauthorized: missing API key`;
+                res.status(401).send(comment);
             }
 
             trace.insertOne(req.log);
@@ -154,19 +160,20 @@ async function connectToServer() {
         // Update * documents matching the query
         app.post("/api/update", async (req, res) => {
 
-            database    = req.body.database   || "persistance";
-            collection  = req.body.collection || "logs";
-            filter      = req.body.filter;
-            updates     = {$set: { last_modified: new Date(), data: req.body.data},};
-            db          = mongo.db(database);
-            trace       = db.collection("logs");
+            database        = req.body.database   || "persistance";
+            collection      = req.body.collection || "logs";
+            filter          = req.body.filter;
+            req.log.comment = comment;
+            updates         = {$set: { last_modified: new Date(), data: req.body.data},};
+            db              = mongo.db(database);
+            trace           = db.collection("logs");
 
             if (req.headers.api_key & (req.headers.api_key == apiKey)) {
                 let updateResult = await db.collection(collection).updateMany(filter, updates);
                 res.status(200).json(updateResult);
             } else {
-                req.log.comment = `Unauthorized: missing API key`;
-                res.status(401).send(req.log.comment);
+                comment = `Unauthorized: missing API key`;
+                res.status(401).send(comment);
             }
 
             trace.insertOne(req.log);
@@ -176,23 +183,24 @@ async function connectToServer() {
         // Delete * documents matching the query
         app.post("/api/delete", async (req, res) => {
 
-            database    = req.body.database   || "persistance";
-            collection  = req.body.collection || "logs";
-            filter      = req.body.filter;
-            db          = mongo.db(database);
-            trace       = db.collection("logs");
+            database        = req.body.database   || "persistance";
+            collection      = req.body.collection || "logs";
+            filter          = req.body.filter;
+            req.log.comment = comment;
+            db              = mongo.db(database);
+            trace           = db.collection("logs");
 
             if (req.headers.api_key & (req.headers.api_key == apiKey)) {
                 let deleteResult = await db.collection(collection).deleteMany(filter);
                 res.status(200).send(deleteResult);
                 if(deleteResult.deletedCount >= 1){
-                    req.log.comment = `${deleteResult.deletedCount} document(s) deleted in database ${database}, collection ${collection}`;
+                    comment = `${deleteResult.deletedCount} document(s) deleted in database ${database}, collection ${collection}`;
                 } else {
-                    req.log.comment = `No document matching filter ${filter}. Nothing was deleted in database ${database}, collection ${collection}`;
+                    comment = `No document matching filter ${filter}. Nothing was deleted in database ${database}, collection ${collection}`;
                 }
             } else {
-                req.log.comment = `Unauthorized: missing API key`;
-                res.status(401).send(req.log.comment);
+                comment = `Unauthorized: missing API key`;
+                res.status(401).send(comment);
             }
 
             trace.insertOne(req.log);
@@ -203,23 +211,24 @@ async function connectToServer() {
 
         app.post("/api/delete/:id", async (req, res) => {
 
-            database    = req.body.database   || "persistance";
-            collection  = req.body.collection || "logs";
-            document    = { "id": req.params.id };
-            db          = mongo.db(database);
-            trace       = db.collection("logs");
+            database        = req.body.database   || "persistance";
+            collection      = req.body.collection || "logs";
+            document        = { "id": req.params.id };
+            req.log.comment = comment;
+            db              = mongo.db(database);
+            trace           = db.collection("logs");
 
             if (req.headers.api_key & (req.headers.api_key == apiKey)) {
                 let deleteResult = await db.collection(collection).deleteOne(document);
                 res.status(200).send(deleteResult);
                 if(deleteResult.deletedCount >= 1){
-                    req.log.comment = `Document with id ${req.params.id} was deleted in database ${database}, collection  ${collection}`;
+                    comment = `Document with id ${req.params.id} was deleted in database ${database}, collection  ${collection}`;
                 } else {
-                    req.log.comment = `No document with id ${req.params.id}. No deletion in database ${database}, collection : ${collection}`;
+                    comment = `No document with id ${req.params.id}. No deletion in database ${database}, collection : ${collection}`;
                 }
             } else {
-                req.log.comment = `Unauthorized: missing API key`;
-                res.status(401).send(req.log.comment);
+                comment = `Unauthorized: missing API key`;
+                res.status(401).send(comment);
             }
 
             trace.insertOne(req.log);
