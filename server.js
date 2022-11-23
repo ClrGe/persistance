@@ -1,16 +1,11 @@
-// CLG - 08/11/2022
-// TODO : async traceDbAccess
-// TODO : add missing operations
-// TODO : accept other db paradigm
+// CLG - 23/11/2022
 
 require("dotenv").config({ path: "./.env" });
 
 const   express             = require("express"),
         { MongoClient }     = require("mongodb"),
-        fs                  = require("fs"),
         traceDbAccess       = require("./middleware/logging.js"),
         dataParams          = {useNewUrlParser: true, useUnifiedTopology: true},
-        traceDir            = process.env.TRACE_DIR || "~/",
         dataSource          = process.env.DB_URI    || "mongodb://localhost:27017",
         apiKey              = process.env.API_KEY   || "123",
         PORT                = process.env.PORT      || 8000;
@@ -37,7 +32,7 @@ async function connectToServer() {
         app.use(express.urlencoded({ extended: false }));
         app.set("trust proxy", true);
         app.use(traceDbAccess);
-
+ 
         // Return all documents in the collection
         app.post("/api/find/all", async (req, res) => {
 
