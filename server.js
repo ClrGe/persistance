@@ -8,6 +8,7 @@ require("dotenv").config({ path: "./.env" });
 const   express             = require("express"),
         { MongoClient }     = require("mongodb"),
         fs                  = require("fs"),
+        traceDbAccess       = require("./middleware/logging.js"),
         dataParams          = {useNewUrlParser: true, useUnifiedTopology: true},
         traceDir            = process.env.TRACE_DIR || "~/",
         dataSource          = process.env.DB_URI    || "mongodb://localhost:27017",
@@ -17,24 +18,11 @@ const   express             = require("express"),
 let     database,
         collection,
         db,
-        document,
-        trace;
+        document;
 
 // Log * access / queries to the database
 
-async function traceDbAccess(req, res, next) {
 
-    let log = {
-        date    : new Date(),
-        origin  : req.ip,
-        req     : req.method + " " + req.url,
-        status  : req.statusCode,
-    }
-
-    await trace.insertOne(log);
-
-    next();
-}
 
 // Server and DB ops
 
@@ -50,7 +38,7 @@ async function connectToServer() {
 
         app.use(express.json());
         app.use(express.urlencoded({ extended: false }));
-        app.use(traceDbAccess);
+        //app.use(traceDbAccess);
         app.set("trust proxy", true);
 
         // Return all documents in the collection
@@ -62,12 +50,10 @@ async function connectToServer() {
             trace       = db.collection("logs");
 
             if (req.headers.api_key & (req.headers.api_key == apiKey)) {
-                traceDbAccess(`Display all docs in database ${database}, collection ${collection}`, req.ip, req.body, res.status, true);
                 let findResult = await db.collection(collection).find({}).toArray();
                 res.status(200).json(findResult);
                 console.log(`Display all documents \n Database: ${database} \n Collection: ${collection}\n ${new Date}\n=====================`);
             } else {
-                traceDbAccess(`Unauthorized call to /api/insert and collection ${collection}`, req.ip, req.body, res.status, false);
                 res.status(401).send(`Unauthorized: missing API key`);
                 console.log(req.ip);
             }
