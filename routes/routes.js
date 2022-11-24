@@ -1,13 +1,14 @@
-// CLG - 23/11/2022
+// CLG - 24/11/2022
 
-require("dotenv").config({ path: "./.env" });
+const express = require("express");
+const router = express.Router();
 
 const   express             = require("express"),
+        { MongoClient }     = require("mongodb"),
         traceDbAccess       = require("./middleware/logging.js"),
         swaggerUi           = require("swagger-ui-express"),
         swaggerJsdoc        = require("swagger-jsdoc"),
         swaggerSpec         = require("./swagger.json"),
-        { MongoClient }     = require("mongodb"),
         dataParams          = {useNewUrlParser: true, useUnifiedTopology: true},
         dataSource          = process.env.DB_URI    || "mongodb://localhost:27017",
         apiKey              = process.env.API_KEY   || "123",
@@ -20,26 +21,7 @@ let     database,
         comment,
         document;
 
-// Server and DB ops
-const app = express();
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-async function connectToServer() {
-
-    const mongo = new MongoClient(dataSource, dataParams);
-
-    try {
-
-        await mongo.connect();
-
-        app.use(express.json());
-        app.use(express.urlencoded({ extended: false }));
-        app.set("trust proxy", true);
-        app.use(traceDbAccess);
-
-        // Return all documents in the collection
-
-        app.post("/api/find/all", async (req, res) => {
+router.post("/api/find/all", async (req, res) => {
 
             database        = req.body.database     || "persistance";
             collection      = req.body.collection   || "logs";
@@ -60,7 +42,7 @@ async function connectToServer() {
         });
 
         // Return a single document (first match)
-        app.post("/api/find", async (req, res) => {
+        router.post("/api/find", async (req, res) => {
 
             database        = req.body.database     || "persistance";
             collection      = req.body.collection   || "logs";
@@ -83,7 +65,7 @@ async function connectToServer() {
         });
 
         // Return a document by id
-        app.post("/api/find/:id", async (req, res) => {
+        router.post("/api/find/:id", async (req, res) => {
 
             database        = req.body.database     || "persistance";
             collection      = req.body.collection   || "persistance";
@@ -106,7 +88,7 @@ async function connectToServer() {
         });
 
         // Create a new document
-        app.post("/api/insert", async (req, res) => {
+        router.post("/api/insert", async (req, res) => {
 
             database        = req.body.database     || "persistance";
             collection      = req.body.collection   || "logs";
@@ -134,7 +116,7 @@ async function connectToServer() {
         });
 
         // Update existing document by id
-        app.post("/api/update/:id", async (req, res) => {
+        router.post("/api/update/:id", async (req, res) => {
 
             database        = req.body.database   || "persistance";
             collection      = req.body.collection || "logs";
@@ -158,7 +140,7 @@ async function connectToServer() {
 
 
         // Update * documents matching the query
-        app.post("/api/update", async (req, res) => {
+        router.post("/api/update", async (req, res) => {
 
             database        = req.body.database   || "persistance";
             collection      = req.body.collection || "logs";
@@ -181,7 +163,7 @@ async function connectToServer() {
         });
 
         // Delete * documents matching the query
-        app.post("/api/delete", async (req, res) => {
+        router.post("/api/delete", async (req, res) => {
 
             database        = req.body.database   || "persistance";
             collection      = req.body.collection || "logs";
@@ -209,7 +191,7 @@ async function connectToServer() {
 
         // Delete document by id
 
-        app.post("/api/delete/:id", async (req, res) => {
+        router.post("/api/delete/:id", async (req, res) => {
 
             database        = req.body.database   || "persistance";
             collection      = req.body.collection || "logs";
@@ -235,17 +217,4 @@ async function connectToServer() {
 
         });
 
-    } catch (err) {
-        console.error(err);
-    }
-
-    app.listen(PORT, () => {
-        console.log(`===================== \nServer listening on port ${PORT} \n=====================`);
-        console.log(`Now connected to MongoDB instance \n===================== `);
-    });
-
-}
-
-connectToServer().catch(console.error);
-
-module.exports = app;
+module.exports = router;
