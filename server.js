@@ -3,8 +3,11 @@
 require("dotenv").config({ path: "./.env" });
 
 const   express             = require("express"),
-        { MongoClient }     = require("mongodb"),
         traceDbAccess       = require("./middleware/logging.js"),
+        swaggerUi           = require("swagger-ui-express"),
+        swaggerJsdoc        = require("swagger-jsdoc"),
+        swaggerSpec         = require("./swagger.json"),
+        { MongoClient }     = require("mongodb"),
         dataParams          = {useNewUrlParser: true, useUnifiedTopology: true},
         dataSource          = process.env.DB_URI    || "mongodb://localhost:27017",
         apiKey              = process.env.API_KEY   || "123",
@@ -19,6 +22,7 @@ let     database,
 
 // Server and DB ops
 const app = express();
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 async function connectToServer() {
 
@@ -32,8 +36,10 @@ async function connectToServer() {
         app.use(express.urlencoded({ extended: false }));
         app.set("trust proxy", true);
         app.use(traceDbAccess);
- 
+
+
         // Return all documents in the collection
+
         app.post("/api/find/all", async (req, res) => {
 
             database        = req.body.database     || "persistance";
