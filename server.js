@@ -22,7 +22,7 @@ let     database,
 
 // Server and DB ops
 const app = express();
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 async function connectToServer() {
 
@@ -36,6 +36,7 @@ async function connectToServer() {
         app.use(express.urlencoded({ extended: false }));
         app.set("trust proxy", true);
         app.use(traceDbAccess);
+
 
         // Return all documents in the collection
 
