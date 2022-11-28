@@ -58,12 +58,13 @@ async function connectToServer() {
             comment = 'Connected on server ' + serverStatus.host + ' version ' + serverStatus.version;
 
             console.log(comment);
-
-            res.status(200).send(comment);
-
+            if (req.headers.api_key & (req.headers.api_key == apiKey)) {
+                res.status(200).send(comment);
+            } else {
+                comment = `Unauthorized: missing API key`;
+                res.status(401).send(comment);
+            }
         });
-
-        
 
 //----------------------------CRUD OPERATIONS------------------------------
 
