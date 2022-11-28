@@ -25,15 +25,13 @@ let     database,
         serverStatus,
         document;
 
-
-
-
 const app = express();
 
 // OpenAPI 3.0 documentation
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-async function connectToServer() {
+// Connect to data source + requests
+async function connectDataSource() {
 
     const mongo = new MongoClient(dataSource, dataParams);
 
@@ -48,13 +46,12 @@ async function connectToServer() {
         app.set("trust proxy", true);
         app.use(traceDbAccess);
 
+        serverStatus = await db.admin().serverStatus();
 
 //------------------------------SUPERVISION--------------------------------
 
         app.get("/api/status", async (req, res) => {
 
-            trace = "logs";
-            serverStatus = await db.admin().serverStatus();
             comment = 'Connected on server ' + serverStatus.host + ' version ' + serverStatus.version;
 
             console.log(comment);
@@ -98,7 +95,7 @@ async function connectToServer() {
             collection      = req.body.collection   || "logs";
             db              = mongo.db(database);
             req.log.comment = comment;
-            //req.log.server  = serverStatus.host;
+            req.log.server= serverStatus.host;
             trace           = db.collection("logs");
 
 
@@ -275,8 +272,7 @@ async function connectToServer() {
 
         });
 
-
-        // Update * documents matching the query
+        // Update * documents matching query
         app.post("/api/update", async (req, res) => {
 
             database        = req.body.database   || "persistance";
@@ -302,8 +298,7 @@ async function connectToServer() {
 
         });
 
-        // Delete * documents matching the query
-
+        // Delete * documents matching query
         app.delete("/api/delete", async (req, res) => {
 
             database        = req.query.database   || "persistance";
@@ -363,7 +358,6 @@ async function connectToServer() {
         });
 
         // Delete document by id
-
         app.delete("/api/delete/:id", async (req, res) => {
 
             database        = req.query.database   || "persistance";
@@ -393,7 +387,6 @@ async function connectToServer() {
 
         });
 
-
         app.post("/api/delete/:id", async (req, res) => {
 
             database        = req.body.database   || "persistance";
@@ -422,22 +415,18 @@ async function connectToServer() {
             trace.insertOne(req.log);
 
         });
-//-------------------------------------------------------------------------
-
-        // // catch 404 and forward to error handler
-        // app.use(function(req, res, next) {
-        //     next(createError(404));
-        // });
 
     } catch (err) {
         console.error(err);
     }
 
-    var server = app.listen(PORT, () => {
+    // Server setup
+    const server = app.listen(PORT, () => {
         console.log(`===================== \nServer listening on port ${PORT} \n=====================`);
         console.log(`Now connected to MongoDB instance \n===================== `);
     });
 
+    // Process termination
     process.on('SIGINT', function() {
         mongo.close(function () {
           console.log('Mongo disconnected on app termination');
@@ -447,48 +436,53 @@ async function connectToServer() {
       setInterval(() => server.getConnections(
         (err, connections) => console.log(`${connections} connections currently open`)
     ), 10000);
-    
+
       process.on('SIGTERM', shutDown);
       process.on('SIGINT', shutDown);
-      
+
       let connections = [];
-      
+
       server.on('connection', connection => {
           connections.push(connection);
           connection.on('close', () => connections = connections.filter(curr => curr !== connection));
       });
 
+    // Close MongoDB connection
     async  function mongoClose() {
         mongo.close(function() {
         console.log('Mongo disconnected on app termination');
-        //process.exit(0);
       })
     };
 
-     async function shutDown() {
-        console.log('Received kill signal, shutting down gracefully');
+    // Kill process
+    async function shutDown() {
+       console.log("Received kill signal, shutting down gracefully");
 
-  
+       server.close(() => {
+         console.log("Closed out remaining connections");
+         process.exit(0);
+       });
 
-        server.close(() => {
-            console.log('Closed out remaining connections');
-            process.exit(0);
-        });
-    
-        setTimeout(() => {
-            console.error('Could not close connections in time, forcefully shutting down');
-            process.exit(1);
-        }, 10000);
-    
-        connections.forEach(curr => curr.end());
-        setTimeout(() => connections.forEach(curr => curr.destroy()), 5000);
-    }
+       setTimeout(() => {
+         console.error(
+           "Could not close connections in time, forcefully shutting down"
+         );
+         process.exit(1);
+       }, 10000);
 
-    server.on('connection', connection => {
-        connections.push(connection);
-        connection.on('close', () => connections = connections.filter(curr => curr !== connection));
-    });
+       connections.forEach((curr) => curr.end());
+       setTimeout(() => connections.forEach((curr) => curr.destroy()), 5000);
+     }
 
+     server.on("connection", (connection) => {
+       connections.push(connection);
+       connection.on(
+         "close",
+         () => (connections = connections.filter((curr) => curr !== connection))
+       );
+     });
+
+    // Authenticated endpoint for process termination
     app.get("/api/stop", async (req, res) => {
 
         if (req.headers.api_key & (req.headers.api_key == apiKey)) {
@@ -503,6 +497,6 @@ async function connectToServer() {
     })
 }
 
-connectToServer().catch(console.error);
+connectDataSource().catch(console.error);
 
 module.exports = app;
