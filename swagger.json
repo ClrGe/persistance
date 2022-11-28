@@ -79,7 +79,7 @@
                         }
                     },
                     "401": {
-                        "description": "Unauthorized",
+                        "description": "Unauthorized"
                     },
                     "403": {
                         "description": "Forbidden"
