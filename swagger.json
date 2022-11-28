@@ -3,7 +3,7 @@
     "info": {
         "title": "Persistance service",
         "version": "0.0.1",
-        "description": "REST API application made with Express to perform operations on a database (here a local MongoDB instance).",
+        "description": "Persistance service presting a REST API to perform authenticated operations on a database.",
         "contact": {
             "name": "Claire Gouarne",
             "url": "https://github.com/ClrGe"
@@ -18,13 +18,16 @@
     "paths": {
         "/api/docs": {
             "get": {
+                "tags": [
+                    "API documentation"
+                ],
                 "description": "OpenAPI 3.0 documentation",
                 "responses": {
                     "200": {
                         "description": "API documentation - SwaggerUI"
                     },
                     "401": {
-                        "description": "Unauthorized (API key)"
+                        "description": "Unauthorized"
                     },
                     "404": {
                         "description": "Not found"
@@ -33,8 +36,82 @@
             }
         },
         "/api/find/all": {
-            "post": {
+            "get": {
+                "tags": [
+                    "CRUD operations"
+                ],
                 "description": "List all documents in collection",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "database",
+                        "in": "query",
+                        "description": "Name of the database",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "collection",
+                        "in": "query",
+                        "description": "Name of the collection",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Unauthorized (API key)"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "CRUD operations"
+                ],
+                "description": "List all documents in collection",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "collection": {
+                                        "type": "string"
+                                    },
+                                    "database": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -49,8 +126,82 @@
             }
         },
         "/api/find": {
-            "post": {
+            "get": {
+                "tags": [
+                    "CRUD operations"
+                ],
                 "description": "Display first matching document",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "database",
+                        "in": "query",
+                        "description": "Name of the database",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "collection",
+                        "in": "query",
+                        "description": "Name of the collection",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Unauthorized (API key)"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "CRUD operations"
+                ],
+                "description": "Display first matching document",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "collection": {
+                                        "type": "string"
+                                    },
+                                    "database": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -65,8 +216,98 @@
             }
         },
         "/api/find/{id}": {
-            "post": {
+            "get": {
+                "tags": [
+                    "CRUD operations"
+                ],
                 "description": "List document with id = req.params.id",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Identifier for the target document",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "database",
+                        "in": "query",
+                        "description": "Name of the database",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "collection",
+                        "in": "query",
+                        "description": "Name of the collection",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Unauthorized (API key)"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "CRUD operations"
+                ],
+                "description": "List document with id = req.params.id",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Identifier for the target document",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "collection": {
+                                        "type": "string"
+                                    },
+                                    "database": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -82,7 +323,41 @@
         },
         "/api/insert": {
             "post": {
+                "tags": [
+                    "CRUD operations"
+                ],
                 "description": "Insert data in collection",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "collection": {
+                                        "type": "string"
+                                    },
+                                    "database": {
+                                        "type": "string"
+                                    },
+                                    "data": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -98,7 +373,41 @@
         },
         "/api/update": {
             "post": {
+                "tags": [
+                    "CRUD operations"
+                ],
                 "description": "Update all documents matching req.body.filter",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "collection": {
+                                        "type": "string"
+                                    },
+                                    "database": {
+                                        "type": "string"
+                                    },
+                                    "filter": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -114,7 +423,38 @@
         },
         "/api/update/{id}": {
             "post": {
+                "tags": [
+                    "CRUD operations"
+                ],
                 "description": "Update document matching req.params.id",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "collection": {
+                                        "type": "string"
+                                    },
+                                    "database": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -129,8 +469,82 @@
             }
         },
         "/api/delete": {
-            "post": {
+            "delete": {
+                "tags": [
+                    "CRUD operations"
+                ],
                 "description": "Delete all documents in collection",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "database",
+                        "in": "query",
+                        "description": "Name of the database",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "collection",
+                        "in": "query",
+                        "description": "Name of the collection",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Unauthorized (API key)"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "CRUD operations"
+                ],
+                "description": "Delete all documents in collection",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "collection": {
+                                        "type": "string"
+                                    },
+                                    "database": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -145,8 +559,90 @@
             }
         },
         "/api/delete/{id}": {
-            "post": {
+            "delete": {
+                "tags": [
+                    "CRUD operations"
+                ],
                 "description": "Delete document matching req.params.id",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Identifier for the target document",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "database",
+                        "in": "query",
+                        "description": "Name of the database",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "collection",
+                        "in": "query",
+                        "description": "Name of the collection",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Unauthorized (API key)"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "CRUD operations"
+                ],
+                "description": "Delete document matching req.params.id",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "collection": {
+                                        "type": "string"
+                                    },
+                                    "database": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success"
