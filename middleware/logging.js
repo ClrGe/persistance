@@ -8,6 +8,7 @@ module.exports = async function traceDbAccess(req, res, next) {
         origin      : req.ip,
         req         : req.method + " " + req.url,
         status      : res.statusCode,
+        server      : req.serverStatus,
         comment     : "",
     }
 

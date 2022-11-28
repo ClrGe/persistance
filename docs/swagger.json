@@ -35,6 +35,64 @@
                 }
             }
         },
+        "/api/status": {
+            "get": {
+                "tags": [
+                    "SUPERVISION"
+                ],
+                "description": "Display service status",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/stop": {
+            "get": {
+                "tags": [
+                    "SUPERVISION"
+                ],
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "description": "Stop service",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        },
         "/api/find/all": {
             "get": {
                 "tags": [

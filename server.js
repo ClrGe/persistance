@@ -1,4 +1,7 @@
-// CLG - 23/11/2022
+/*-------------------------------------------------------------------------------
+------------------------------- PERSISTANCE -------------------------------------
+--------------------------------------------------------------------------------*/
+
 
 require("dotenv").config({ path: "./.env" });
 
@@ -8,6 +11,7 @@ const   express             = require("express"),
         swaggerJsdoc        = require("swagger-jsdoc"),
         swaggerSpec         = require("./docs/swagger.json"),
         { MongoClient }     = require("mongodb"),
+        createError         = require('http-errors'),
         dataParams          = {useNewUrlParser: true, useUnifiedTopology: true},
         dataSource          = process.env.DB_URI    || "mongodb://localhost:27017",
         apiKey              = process.env.API_KEY,
@@ -18,10 +22,15 @@ let     database,
         db,
         trace,
         comment,
+        serverStatus,
         document;
 
-// Server and DB ops
+
+
+
 const app = express();
+
+// OpenAPI 3.0 documentation
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 async function connectToServer() {
@@ -31,12 +40,32 @@ async function connectToServer() {
     try {
 
         await mongo.connect();
+        db  = mongo.db(database);
+        trace = db.collection("logs");
 
         app.use(express.json());
         app.use(express.urlencoded({ extended: false }));
         app.set("trust proxy", true);
         app.use(traceDbAccess);
 
+
+//------------------------------SUPERVISION--------------------------------
+
+        app.get("/api/status", async (req, res) => {
+
+            trace = "logs";
+            serverStatus = await db.admin().serverStatus();
+            comment = 'Connected on server ' + serverStatus.host + ' version ' + serverStatus.version;
+
+            console.log(comment);
+
+            res.status(200).json(comment);
+
+        });
+
+        
+
+//----------------------------CRUD OPERATIONS------------------------------
 
         // Return all documents in the collection
         app.get("/api/find/all", async (req, res) => {
@@ -45,6 +74,7 @@ async function connectToServer() {
             collection      = req.query.collection;
             db              = mongo.db(database);
             req.log.comment = comment;
+            req.log.server  = serverStatus.host;
             trace           = db.collection("logs");
 
             if (req.headers.api_key & (req.headers.api_key == apiKey)) {
@@ -57,16 +87,19 @@ async function connectToServer() {
                 comment = `Unauthorized: missing API key`;
                 res.status(401).send(comment);
             }
-
+            server = serverStatus;
             trace.insertOne(req.log);
         });
+
         app.post("/api/find/all", async (req, res) => {
 
             database        = req.body.database     || "persistance";
             collection      = req.body.collection   || "logs";
             db              = mongo.db(database);
             req.log.comment = comment;
+            req.log.server  = serverStatus.host;
             trace           = db.collection("logs");
+
 
             if (req.headers.api_key & (req.headers.api_key == apiKey)) {
                 req.authorized = true;
@@ -83,13 +116,13 @@ async function connectToServer() {
         });
 
         // Return a single document (first match)
-
         app.get("/api/find", async (req, res) => {
 
             database        = req.query.database     || "persistance";
             collection      = req.query.collection   || "logs";
             db              = mongo.db(database);
             req.log.comment = comment;
+            req.log.server  = serverStatus.host;
             queryFilter     = req.body.filter;
             trace           = db.collection("logs");
 
@@ -114,6 +147,7 @@ async function connectToServer() {
             collection      = req.body.collection   || "logs";
             db              = mongo.db(database);
             req.log.comment = comment;
+            req.log.server  = serverStatus.host;
             queryFilter     = req.body.filter;
             trace           = db.collection("logs");
 
@@ -133,7 +167,6 @@ async function connectToServer() {
         });
 
         // Return a document by id
-
         app.get("/api/find/:id", async (req, res) => {
 
             database        = req.query.database     || "persistance";
@@ -141,6 +174,7 @@ async function connectToServer() {
             document        = { id: req.query.id };
             db              = mongo.db(database);
             req.log.comment = comment;
+            req.log.server  = serverStatus.host;
             //filter        = req.body.filter.id;
             trace           = db.collection("logs");
 
@@ -165,6 +199,7 @@ async function connectToServer() {
             document        = { id: req.params.id };
             db              = mongo.db(database);
             req.log.comment = comment;
+            req.log.server  = serverStatus.host;
             //filter        = req.body.filter.id;
             trace           = db.collection("logs");
 
@@ -182,13 +217,14 @@ async function connectToServer() {
 
         });
 
-        // Create a new document
+        // Insert a new document
         app.post("/api/insert", async (req, res) => {
 
             database        = req.body.database     || "persistance";
             collection      = req.body.collection   || "logs";
             document        = req.body;
             req.log.comment = comment;
+            req.log.server  = serverStatus.host;
             db              = mongo.db(database);
             trace           = db.collection("logs");
 
@@ -219,6 +255,7 @@ async function connectToServer() {
             collection      = req.body.collection || "logs";
             document        = { id: req.params.id };
             req.log.comment = comment;
+            req.log.server  = serverStatus.host;
             updates         = {$set: { last_modified: new Date(), data: req.body.data},};
             db              = mongo.db(database);
             trace           = db.collection("logs");
@@ -245,6 +282,7 @@ async function connectToServer() {
             collection      = req.body.collection || "logs";
             filter          = req.body.filter;
             req.log.comment = comment;
+            req.log.server  = serverStatus.host;
             updates         = {$set: { last_modified: new Date(), data: req.body.data},};
             db              = mongo.db(database);
             trace           = db.collection("logs");
@@ -271,6 +309,7 @@ async function connectToServer() {
             collection      = req.query.collection || "logs";
             filter          = req.query.filter;
             req.log.comment = comment;
+            req.log.server  = serverStatus.host;
             db              = mongo.db(database);
             trace           = db.collection("logs");
 
@@ -299,6 +338,7 @@ async function connectToServer() {
             collection      = req.body.collection || "logs";
             filter          = req.body.filter;
             req.log.comment = comment;
+            req.log.server  = serverStatus.host;
             db              = mongo.db(database);
             trace           = db.collection("logs");
 
@@ -329,6 +369,7 @@ async function connectToServer() {
             collection      = req.query.collection || "logs";
             document        = { "id": req.query.id };
             req.log.comment = comment;
+            req.log.server  = serverStatus.host;
             db              = mongo.db(database);
             trace           = db.collection("logs");
 
@@ -358,6 +399,7 @@ async function connectToServer() {
             collection      = req.body.collection || "logs";
             document        = { "id": req.params.id };
             req.log.comment = comment;
+            req.log.server  = serverStatus.host;
             db              = mongo.db(database);
             trace           = db.collection("logs");
 
@@ -379,16 +421,35 @@ async function connectToServer() {
             trace.insertOne(req.log);
 
         });
+//-------------------------------------------------------------------------
+
+        // // catch 404 and forward to error handler
+        // app.use(function(req, res, next) {
+        //     next(createError(404));
+        // });
 
     } catch (err) {
         console.error(err);
     }
 
-    app.listen(PORT, () => {
+    var server = app.listen(PORT, () => {
         console.log(`===================== \nServer listening on port ${PORT} \n=====================`);
         console.log(`Now connected to MongoDB instance \n===================== `);
     });
 
+    app.get("/api/stop", async (req, res) => {
+
+        if (req.headers.api_key & (req.headers.api_key == apiKey)) {
+            res.status(200).json("Stopping persistance service");
+            console.log("Stopping persistance service");
+            server.close();
+        } else {
+            req.authorized = false;
+            comment = `Unauthorized: missing API key`;
+            res.status(401).send(comment);
+        }
+
+    })
 }
 
 connectToServer().catch(console.error);
