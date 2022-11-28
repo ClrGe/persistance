@@ -98,7 +98,7 @@ async function connectToServer() {
             collection      = req.body.collection   || "logs";
             db              = mongo.db(database);
             req.log.comment = comment;
-            req.log.server  = serverStatus.host;
+            //req.log.server  = serverStatus.host;
             trace           = db.collection("logs");
 
 
@@ -438,12 +438,62 @@ async function connectToServer() {
         console.log(`Now connected to MongoDB instance \n===================== `);
     });
 
+    process.on('SIGINT', function() {
+        mongo.close(function () {
+          console.log('Mongo disconnected on app termination');
+          process.exit(0);
+        });
+      });
+      setInterval(() => server.getConnections(
+        (err, connections) => console.log(`${connections} connections currently open`)
+    ), 10000);
+    
+      process.on('SIGTERM', shutDown);
+      process.on('SIGINT', shutDown);
+      
+      let connections = [];
+      
+      server.on('connection', connection => {
+          connections.push(connection);
+          connection.on('close', () => connections = connections.filter(curr => curr !== connection));
+      });
+
+    async  function mongoClose() {
+        mongo.close(function() {
+        console.log('Mongo disconnected on app termination');
+        //process.exit(0);
+      })
+    };
+
+     async function shutDown() {
+        console.log('Received kill signal, shutting down gracefully');
+
+  
+
+        server.close(() => {
+            console.log('Closed out remaining connections');
+            process.exit(0);
+        });
+    
+        setTimeout(() => {
+            console.error('Could not close connections in time, forcefully shutting down');
+            process.exit(1);
+        }, 10000);
+    
+        connections.forEach(curr => curr.end());
+        setTimeout(() => connections.forEach(curr => curr.destroy()), 5000);
+    }
+
+    server.on('connection', connection => {
+        connections.push(connection);
+        connection.on('close', () => connections = connections.filter(curr => curr !== connection));
+    });
+
     app.get("/api/stop", async (req, res) => {
 
         if (req.headers.api_key & (req.headers.api_key == apiKey)) {
-            res.status(200).json("Stopping persistance service");
-            console.log("Stopping persistance service");
-            server.close();
+            res.status(200).json("Stopping persistance service...");
+            await mongoClose().then(shutDown());
         } else {
             req.authorized = false;
             comment = `Unauthorized: missing API key`;
