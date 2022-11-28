@@ -19,7 +19,7 @@
         "/api/docs": {
             "get": {
                 "tags": [
-                    "API documentation"
+                    "DOCS"
                 ],
                 "description": "OpenAPI 3.0 documentation",
                 "responses": {
@@ -38,7 +38,7 @@
         "/api/find/all": {
             "get": {
                 "tags": [
-                    "CRUD operations"
+                    "GET"
                 ],
                 "description": "List all documents in specified collection of specified database. If not provided, returns default collection.",
                 "parameters": [
@@ -88,7 +88,7 @@
             },
             "post": {
                 "tags": [
-                    "CRUD operations"
+                    "POST"
                 ],
                 "description": "List all documents in specified collection of specified database. If not provided, returns default collection.",
                 "parameters": [
@@ -142,7 +142,7 @@
         "/api/find": {
             "get": {
                 "tags": [
-                    "CRUD operations"
+                    "GET"
                 ],
                 "description": "Display first matching document in specified collection of specified database. If not provided, uses default collection.",
                 "parameters": [
@@ -192,7 +192,7 @@
             },
             "post": {
                 "tags": [
-                    "CRUD operations"
+                    "POST"
                 ],
                 "description": "Display first matching document in specified collection of specified database. If not provided, uses default collection.",
                 "parameters": [
@@ -246,7 +246,7 @@
         "/api/find/{id}": {
             "get": {
                 "tags": [
-                    "CRUD operations"
+                    "GET"
                 ],
                 "description": "Returns document with id matching query in specified collection of specified database. If not provided, uses default collection.",
                 "parameters": [
@@ -304,7 +304,7 @@
             },
             "post": {
                 "tags": [
-                    "CRUD operations"
+                    "POST"
                 ],
                 "description": "Returns document with id matching query in specified collection of specified database. If not provided, uses default collection.",
                 "parameters": [
@@ -366,7 +366,7 @@
         "/api/insert": {
             "post": {
                 "tags": [
-                    "CRUD operations"
+                    "POST"
                 ],
                 "description": "Insert data in specified collection of specified database. If not provided, uses default collection.",
                 "parameters": [
@@ -423,7 +423,7 @@
         "/api/update": {
             "post": {
                 "tags": [
-                    "CRUD operations"
+                    "POST"
                 ],
                 "description": "Update all documents matching filter in specified collection of specified database. If not provided, uses default collection.",
                 "parameters": [
@@ -480,7 +480,7 @@
         "/api/update/{id}": {
             "post": {
                 "tags": [
-                    "CRUD operations"
+                    "POST"
                 ],
                 "description": "Update document matching query in specified collection of specified database. If not provided, uses default collection.",
                 "parameters": [
@@ -534,7 +534,7 @@
         "/api/delete": {
             "delete": {
                 "tags": [
-                    "CRUD operations"
+                    "DELETE"
                 ],
                 "description": "Delete all documents in specified collection of specified database. If not provided, uses default collection.",
                 "parameters": [
@@ -584,7 +584,7 @@
             },
             "post": {
                 "tags": [
-                    "CRUD operations"
+                    "POST"
                 ],
                 "description": "Delete all documents in specified collection of specified database. If not provided, uses default collection.",
                 "parameters": [
@@ -638,7 +638,7 @@
         "/api/delete/{id}": {
             "delete": {
                 "tags": [
-                    "CRUD operations"
+                    "DELETE"
                 ],
                 "description": "Delete document matching query in specified collection of specified database. If not provided, uses default collection.",
                 "parameters": [
@@ -696,7 +696,7 @@
             },
             "post": {
                 "tags": [
-                    "CRUD operations"
+                    "POST"
                 ],
                 "description": "Delete document matching query in specified collection of specified database. If not provided, uses default collection.",
                 "parameters": [
