@@ -1,17 +1,8 @@
 *CLG - november 2022*
 
-**Microservice serving an authenticated REST API to access a database**
+**Persistance service presting a REST API to perform authenticated operations on a database.**
 
 ---
-
-## 📚 Stack
-
----
-## Stack
-
-- NodeJS
-- ExpressJS
-- Any database (currently developing with MongoDB 6.0.2 but will be extended to any db)
 
 ## ⚙ Run
 

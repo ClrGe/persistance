@@ -18,7 +18,9 @@
     "paths": {
         "/api/docs": {
             "get": {
-                "tags" : ["API documentation"],
+                "tags": [
+                    "API documentation"
+                ],
                 "description": "OpenAPI 3.0 documentation",
                 "responses": {
                     "200": {
@@ -35,8 +37,36 @@
         },
         "/api/find/all": {
             "get": {
-                "tags" : ["CRUD operations"],
+                "tags": [
+                    "CRUD operations"
+                ],
                 "description": "List all documents in collection",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "database",
+                        "in": "query",
+                        "description": "Name of the database",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "collection",
+                        "in": "query",
+                        "description": "Name of the collection",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -50,8 +80,38 @@
                 }
             },
             "post": {
-                "tags" : ["CRUD operations"],
+                "tags": [
+                    "CRUD operations"
+                ],
                 "description": "List all documents in collection",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "collection": {
+                                        "type": "string"
+                                    },
+                                    "database": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -67,8 +127,36 @@
         },
         "/api/find": {
             "get": {
-                "tags" : ["CRUD operations"],
+                "tags": [
+                    "CRUD operations"
+                ],
                 "description": "Display first matching document",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "database",
+                        "in": "query",
+                        "description": "Name of the database",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "collection",
+                        "in": "query",
+                        "description": "Name of the collection",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -82,8 +170,38 @@
                 }
             },
             "post": {
-                "tags" : ["CRUD operations"],
+                "tags": [
+                    "CRUD operations"
+                ],
                 "description": "Display first matching document",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "collection": {
+                                        "type": "string"
+                                    },
+                                    "database": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -99,8 +217,44 @@
         },
         "/api/find/{id}": {
             "get": {
-                "tags" : ["CRUD operations"],
+                "tags": [
+                    "CRUD operations"
+                ],
                 "description": "List document with id = req.params.id",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Identifier for the target document",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "database",
+                        "in": "query",
+                        "description": "Name of the database",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "collection",
+                        "in": "query",
+                        "description": "Name of the collection",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -114,8 +268,46 @@
                 }
             },
             "post": {
-                "tags" : ["CRUD operations"],
+                "tags": [
+                    "CRUD operations"
+                ],
                 "description": "List document with id = req.params.id",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Identifier for the target document",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "collection": {
+                                        "type": "string"
+                                    },
+                                    "database": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -131,8 +323,41 @@
         },
         "/api/insert": {
             "post": {
-                "tags" : ["CRUD operations"],
+                "tags": [
+                    "CRUD operations"
+                ],
                 "description": "Insert data in collection",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "collection": {
+                                        "type": "string"
+                                    },
+                                    "database": {
+                                        "type": "string"
+                                    },
+                                    "data": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -148,8 +373,41 @@
         },
         "/api/update": {
             "post": {
-                "tags" : ["CRUD operations"],
+                "tags": [
+                    "CRUD operations"
+                ],
                 "description": "Update all documents matching req.body.filter",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "collection": {
+                                        "type": "string"
+                                    },
+                                    "database": {
+                                        "type": "string"
+                                    },
+                                    "filter": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -165,8 +423,38 @@
         },
         "/api/update/{id}": {
             "post": {
-                "tags" : ["CRUD operations"],
+                "tags": [
+                    "CRUD operations"
+                ],
                 "description": "Update document matching req.params.id",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "collection": {
+                                        "type": "string"
+                                    },
+                                    "database": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -182,8 +470,36 @@
         },
         "/api/delete": {
             "delete": {
-                "tags" : ["CRUD operations"],
+                "tags": [
+                    "CRUD operations"
+                ],
                 "description": "Delete all documents in collection",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "database",
+                        "in": "query",
+                        "description": "Name of the database",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "collection",
+                        "in": "query",
+                        "description": "Name of the collection",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -197,8 +513,38 @@
                 }
             },
             "post": {
-                "tags" : ["CRUD operations"],
+                "tags": [
+                    "CRUD operations"
+                ],
                 "description": "Delete all documents in collection",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "collection": {
+                                        "type": "string"
+                                    },
+                                    "database": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -214,8 +560,44 @@
         },
         "/api/delete/{id}": {
             "delete": {
-                "tags" : ["CRUD operations"],
+                "tags": [
+                    "CRUD operations"
+                ],
                 "description": "Delete document matching req.params.id",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Identifier for the target document",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "database",
+                        "in": "query",
+                        "description": "Name of the database",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "collection",
+                        "in": "query",
+                        "description": "Name of the collection",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -229,8 +611,38 @@
                 }
             },
             "post": {
-                "tags" : ["CRUD operations"],
+                "tags": [
+                    "CRUD operations"
+                ],
                 "description": "Delete document matching req.params.id",
+                "parameters": [
+                    {
+                        "name": "api_key",
+                        "in": "header",
+                        "description": "Api key provided for authentication",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "collection": {
+                                        "type": "string"
+                                    },
+                                    "database": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success"
