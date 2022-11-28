@@ -59,7 +59,7 @@ async function connectToServer() {
 
             console.log(comment);
 
-            res.status(200).json(comment);
+            res.status(200).send(comment);
 
         });
 
