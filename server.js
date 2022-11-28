@@ -1,18 +1,16 @@
-/*-------------------------------------------------------------------------------
-------------------------------- PERSISTANCE -------------------------------------
---------------------------------------------------------------------------------*/
+/*===============================================================================
+----------- Microservice providing a secure access to a data source -------------
+----------------------------- V1 - CLG 2022-11-28 -------------------------------
+================================================================================*/
 
+import express from "express"
+import dotenv from "dotenv"
+import swaggerUi from "swagger-ui-express"
+import { MongoClient } from "mongodb"
 
-require("dotenv").config({ path: "./.env" });
+dotenv.config({ path: "./.env" });
 
-const   express             = require("express"),
-        traceDbAccess       = require("./middleware/logging.js"),
-        swaggerUi           = require("swagger-ui-express"),
-        swaggerJsdoc        = require("swagger-jsdoc"),
-        swaggerSpec         = require("./docs/swagger.json"),
-        { MongoClient }     = require("mongodb"),
-        createError         = require('http-errors'),
-        dataParams          = {useNewUrlParser: true, useUnifiedTopology: true},
+const   dataParams          = {useNewUrlParser: true, useUnifiedTopology: true},
         dataSource          = process.env.DB_URI    || "mongodb://localhost:27017",
         apiKey              = process.env.API_KEY,
         PORT                = process.env.PORT      || 8000;
@@ -28,7 +26,22 @@ let     database,
 const app = express();
 
 // OpenAPI 3.0 documentation
-app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup("./docs/swagger.json"));
+
+// Defining the 'log' object
+async function traceDbAccess(req, res, next) {
+
+    req.log = {
+        date        : new Date(),
+        authorized  : false,
+        origin      : req.ip,
+        req         : req.method + " " + req.url,
+        status      : res.statusCode,
+        server      : req.serverStatus,
+        comment     : "",
+    }
+    next();
+}
 
 // Connect to data source + requests
 async function connectDataSource() {
@@ -432,10 +445,11 @@ async function connectDataSource() {
           console.log('Mongo disconnected on app termination');
           process.exit(0);
         });
-      });
-      setInterval(() => server.getConnections(
-        (err, connections) => console.log(`${connections} connections currently open`)
-    ), 10000);
+    });
+
+    // setInterval(() => server.getConnections(
+    //     (err, connections) => console.log(`${connections} connections currently open`)
+    // ), 10000);
 
       process.on('SIGTERM', shutDown);
       process.on('SIGINT', shutDown);
@@ -456,6 +470,7 @@ async function connectDataSource() {
 
     // Kill process
     async function shutDown() {
+
        console.log("Received kill signal, shutting down gracefully");
 
        server.close(() => {
@@ -469,7 +484,6 @@ async function connectDataSource() {
          );
          process.exit(1);
        }, 10000);
-
        connections.forEach((curr) => curr.end());
        setTimeout(() => connections.forEach((curr) => curr.destroy()), 5000);
      }
@@ -480,6 +494,7 @@ async function connectDataSource() {
          "close",
          () => (connections = connections.filter((curr) => curr !== connection))
        );
+
      });
 
     // Authenticated endpoint for process termination
@@ -494,9 +509,9 @@ async function connectDataSource() {
             res.status(401).send(comment);
         }
 
-    })
+    });
 }
 
 connectDataSource().catch(console.error);
 
-module.exports = app;
+//module.exports = app;

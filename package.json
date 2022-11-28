@@ -1,6 +1,7 @@
 {
   "name": "persistance",
   "version": "1.0.0",
+  "type": "module",
   "description": "CRUD API with NodeJS - ExpressJS - MongoDB",
   "main": "server.js",
   "scripts": {
