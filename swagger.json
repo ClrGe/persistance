@@ -3,7 +3,7 @@
     "info": {
         "title": "Persistance service",
         "version": "0.0.1",
-        "description": "Persistance service presting a REST API to perform authenticated operations on a database.",
+        "description": "Persistance service presenting a REST API to perform authenticated operations on a database. Authorization is granted through the provision of an API key.",
         "contact": {
             "name": "Claire Gouarne",
             "url": "https://github.com/ClrGe"
@@ -24,13 +24,13 @@
                 "description": "OpenAPI 3.0 documentation",
                 "responses": {
                     "200": {
-                        "description": "API documentation - SwaggerUI"
+                        "description": "Success"
                     },
                     "401": {
                         "description": "Unauthorized"
                     },
-                    "404": {
-                        "description": "Not found"
+                    "403": {
+                        "description": "Forbidden"
                     }
                 }
             }
@@ -40,7 +40,7 @@
                 "tags": [
                     "CRUD operations"
                 ],
-                "description": "List all documents in collection",
+                "description": "List all documents in specified collection of specified database. If not provided, returns default collection.",
                 "parameters": [
                     {
                         "name": "api_key",
@@ -69,13 +69,20 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success: return collection",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthorized (API key)"
+                        "description": "Unauthorized",
                     },
-                    "404": {
-                        "description": "Not found"
+                    "403": {
+                        "description": "Forbidden"
                     }
                 }
             },
@@ -83,7 +90,7 @@
                 "tags": [
                     "CRUD operations"
                 ],
-                "description": "List all documents in collection",
+                "description": "List all documents in specified collection of specified database. If not provided, returns default collection.",
                 "parameters": [
                     {
                         "name": "api_key",
@@ -114,13 +121,20 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success: return collection",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthorized (API key)"
+                        "description": "Unauthorized"
                     },
-                    "404": {
-                        "description": "Not found"
+                    "403": {
+                        "description": "Forbidden"
                     }
                 }
             }
@@ -130,7 +144,7 @@
                 "tags": [
                     "CRUD operations"
                 ],
-                "description": "Display first matching document",
+                "description": "Display first matching document in specified collection of specified database. If not provided, uses default collection.",
                 "parameters": [
                     {
                         "name": "api_key",
@@ -159,13 +173,20 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthorized (API key)"
+                        "description": "Unauthorized"
                     },
-                    "404": {
-                        "description": "Not found"
+                    "403": {
+                        "description": "Forbidden"
                     }
                 }
             },
@@ -173,7 +194,7 @@
                 "tags": [
                     "CRUD operations"
                 ],
-                "description": "Display first matching document",
+                "description": "Display first matching document in specified collection of specified database. If not provided, uses default collection.",
                 "parameters": [
                     {
                         "name": "api_key",
@@ -204,13 +225,20 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthorized (API key)"
+                        "description": "Unauthorized"
                     },
-                    "404": {
-                        "description": "Not found"
+                    "403": {
+                        "description": "Forbidden"
                     }
                 }
             }
@@ -220,7 +248,7 @@
                 "tags": [
                     "CRUD operations"
                 ],
-                "description": "List document with id = req.params.id",
+                "description": "Returns document with id matching query in specified collection of specified database. If not provided, uses default collection.",
                 "parameters": [
                     {
                         "name": "api_key",
@@ -257,13 +285,20 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthorized (API key)"
+                        "description": "Unauthorized"
                     },
-                    "404": {
-                        "description": "Not found"
+                    "403": {
+                        "description": "Forbidden"
                     }
                 }
             },
@@ -271,7 +306,7 @@
                 "tags": [
                     "CRUD operations"
                 ],
-                "description": "List document with id = req.params.id",
+                "description": "Returns document with id matching query in specified collection of specified database. If not provided, uses default collection.",
                 "parameters": [
                     {
                         "name": "api_key",
@@ -310,13 +345,20 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthorized (API key)"
+                        "description": "Unauthorized"
                     },
-                    "404": {
-                        "description": "Not found"
+                    "403": {
+                        "description": "Forbidden"
                     }
                 }
             }
@@ -326,7 +368,7 @@
                 "tags": [
                     "CRUD operations"
                 ],
-                "description": "Insert data in collection",
+                "description": "Insert data in specified collection of specified database. If not provided, uses default collection.",
                 "parameters": [
                     {
                         "name": "api_key",
@@ -360,13 +402,20 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthorized (API key)"
+                        "description": "Unauthorized"
                     },
-                    "404": {
-                        "description": "Not found"
+                    "403": {
+                        "description": "Forbidden"
                     }
                 }
             }
@@ -376,7 +425,7 @@
                 "tags": [
                     "CRUD operations"
                 ],
-                "description": "Update all documents matching req.body.filter",
+                "description": "Update all documents matching filter in specified collection of specified database. If not provided, uses default collection.",
                 "parameters": [
                     {
                         "name": "api_key",
@@ -410,13 +459,20 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthorized (API key)"
+                        "description": "Unauthorized"
                     },
-                    "404": {
-                        "description": "Not found"
+                    "403": {
+                        "description": "Forbidden"
                     }
                 }
             }
@@ -426,7 +482,7 @@
                 "tags": [
                     "CRUD operations"
                 ],
-                "description": "Update document matching req.params.id",
+                "description": "Update document matching query in specified collection of specified database. If not provided, uses default collection.",
                 "parameters": [
                     {
                         "name": "api_key",
@@ -457,13 +513,20 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthorized (API key)"
+                        "description": "Unauthorized"
                     },
-                    "404": {
-                        "description": "Not found"
+                    "403": {
+                        "description": "Forbidden"
                     }
                 }
             }
@@ -473,7 +536,7 @@
                 "tags": [
                     "CRUD operations"
                 ],
-                "description": "Delete all documents in collection",
+                "description": "Delete all documents in specified collection of specified database. If not provided, uses default collection.",
                 "parameters": [
                     {
                         "name": "api_key",
@@ -502,13 +565,20 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthorized (API key)"
+                        "description": "Unauthorized"
                     },
-                    "404": {
-                        "description": "Not found"
+                    "403": {
+                        "description": "Forbidden"
                     }
                 }
             },
@@ -516,7 +586,7 @@
                 "tags": [
                     "CRUD operations"
                 ],
-                "description": "Delete all documents in collection",
+                "description": "Delete all documents in specified collection of specified database. If not provided, uses default collection.",
                 "parameters": [
                     {
                         "name": "api_key",
@@ -547,13 +617,20 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthorized (API key)"
+                        "description": "Unauthorized"
                     },
-                    "404": {
-                        "description": "Not found"
+                    "403": {
+                        "description": "Forbidden"
                     }
                 }
             }
@@ -563,7 +640,7 @@
                 "tags": [
                     "CRUD operations"
                 ],
-                "description": "Delete document matching req.params.id",
+                "description": "Delete document matching query in specified collection of specified database. If not provided, uses default collection.",
                 "parameters": [
                     {
                         "name": "api_key",
@@ -600,13 +677,20 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthorized (API key)"
+                        "description": "Unauthorized"
                     },
-                    "404": {
-                        "description": "Not found"
+                    "403": {
+                        "description": "Forbidden"
                     }
                 }
             },
@@ -614,7 +698,7 @@
                 "tags": [
                     "CRUD operations"
                 ],
-                "description": "Delete document matching req.params.id",
+                "description": "Delete document matching query in specified collection of specified database. If not provided, uses default collection.",
                 "parameters": [
                     {
                         "name": "api_key",
@@ -645,13 +729,20 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthorized (API key)"
+                        "description": "Unauthorized"
                     },
-                    "404": {
-                        "description": "Not found"
+                    "403": {
+                        "description": "Forbidden"
                     }
                 }
             }
