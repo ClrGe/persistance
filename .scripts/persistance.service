@@ -1,0 +1,20 @@
+[Unit]
+Description=service de persistance
+Documentation=<host>/api/docs
+After=network.target
+
+[Service]
+Environment="PORT=8000"
+Environment="DB_URI=mongodb://localhost:27017"
+WorkingDirectory=<path to working directory>
+Type=simple
+User=persistance
+Group=persistance
+ExecStart=<path to script>
+SyslogIdentifier=PERSISTANCE
+StandartOutput=syslog
+Restart=on-failure
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

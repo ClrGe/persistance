@@ -3,7 +3,7 @@
     "info": {
         "title": "Persistance service",
         "version": "0.0.1",
-        "description": "REST API application made with Express to perform operations on a database (here a local MongoDB instance).",
+        "description": "Persistance service presting a REST API to perform authenticated operations on a database.",
         "contact": {
             "name": "Claire Gouarne",
             "url": "https://github.com/ClrGe"
@@ -18,13 +18,14 @@
     "paths": {
         "/api/docs": {
             "get": {
+                "tags" : ["API documentation"],
                 "description": "OpenAPI 3.0 documentation",
                 "responses": {
                     "200": {
                         "description": "API documentation - SwaggerUI"
                     },
                     "401": {
-                        "description": "Unauthorized (API key)"
+                        "description": "Unauthorized"
                     },
                     "404": {
                         "description": "Not found"
@@ -33,7 +34,23 @@
             }
         },
         "/api/find/all": {
+            "get": {
+                "tags" : ["CRUD operations"],
+                "description": "List all documents in collection",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Unauthorized (API key)"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
             "post": {
+                "tags" : ["CRUD operations"],
                 "description": "List all documents in collection",
                 "responses": {
                     "200": {
@@ -49,7 +66,23 @@
             }
         },
         "/api/find": {
+            "get": {
+                "tags" : ["CRUD operations"],
+                "description": "Display first matching document",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Unauthorized (API key)"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
             "post": {
+                "tags" : ["CRUD operations"],
                 "description": "Display first matching document",
                 "responses": {
                     "200": {
@@ -65,7 +98,23 @@
             }
         },
         "/api/find/{id}": {
+            "get": {
+                "tags" : ["CRUD operations"],
+                "description": "List document with id = req.params.id",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Unauthorized (API key)"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
             "post": {
+                "tags" : ["CRUD operations"],
                 "description": "List document with id = req.params.id",
                 "responses": {
                     "200": {
@@ -82,6 +131,7 @@
         },
         "/api/insert": {
             "post": {
+                "tags" : ["CRUD operations"],
                 "description": "Insert data in collection",
                 "responses": {
                     "200": {
@@ -98,6 +148,7 @@
         },
         "/api/update": {
             "post": {
+                "tags" : ["CRUD operations"],
                 "description": "Update all documents matching req.body.filter",
                 "responses": {
                     "200": {
@@ -114,6 +165,7 @@
         },
         "/api/update/{id}": {
             "post": {
+                "tags" : ["CRUD operations"],
                 "description": "Update document matching req.params.id",
                 "responses": {
                     "200": {
@@ -129,7 +181,23 @@
             }
         },
         "/api/delete": {
+            "delete": {
+                "tags" : ["CRUD operations"],
+                "description": "Delete all documents in collection",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Unauthorized (API key)"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
             "post": {
+                "tags" : ["CRUD operations"],
                 "description": "Delete all documents in collection",
                 "responses": {
                     "200": {
@@ -145,7 +213,23 @@
             }
         },
         "/api/delete/{id}": {
+            "delete": {
+                "tags" : ["CRUD operations"],
+                "description": "Delete document matching req.params.id",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Unauthorized (API key)"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
             "post": {
+                "tags" : ["CRUD operations"],
                 "description": "Delete document matching req.params.id",
                 "responses": {
                     "200": {
