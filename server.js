@@ -3,10 +3,10 @@
 ----------------------------- V1 - CLG 2022-11-28 -------------------------------
 ================================================================================*/
 
-import express from "express"
-import dotenv from "dotenv"
-import swaggerUi from "swagger-ui-express"
-import { MongoClient } from "mongodb"
+import  swaggerUi   from "swagger-ui-express"
+import  express     from "express"
+import  MongoClient from "mongodb"
+import  dotenv      from "dotenv"
 
 dotenv.config({ path: "./.env" });
 
@@ -65,7 +65,7 @@ async function connectDataSource() {
 
         app.get("/api/status", async (req, res) => {
 
-            comment = 'Connected on server ' + serverStatus.host + ' version ' + serverStatus.version;
+            comment = 'New connection to server ' + serverStatus.host + ' version ' + serverStatus.version;
 
             console.log(comment);
             if (req.headers.api_key & (req.headers.api_key == apiKey)) {

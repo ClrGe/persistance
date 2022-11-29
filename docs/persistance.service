@@ -1,3 +1,5 @@
+# Sample script for a systemd service
+
 [Unit]
 Description=service de persistance
 Documentation=<host>/api/docs
